@@ -57,22 +57,21 @@ export const AppReducer = (state, action) => {
                 ...state,
                 budget
             };
-        case 'SET_BUDGET':
-            action.type = "DONE";
-            state.budget = action.payload;
-
-            return {
-                ...state,
-            };
-        case 'CHG_CURRENCY':
-            action.type = "DONE";
-            state.currency = action.payload;
-            return {
-                ...state
-            }
-
-        default:
-            return state;
+            case 'SET_BUDGET':
+                return {
+                    ...state,
+                    budget: action.payload
+                };
+    
+            // This is the action that's fired when the currency dropdown changes
+            case 'SET_CURRENCY':
+                return {
+                    ...state,
+                    currency: action.payload
+                }
+    
+            default:
+                return state;
     }
 };
 
@@ -97,7 +96,7 @@ export const AppContext = createContext();
 export const AppProvider = (props) => {
     // 4. Sets up the app state. takes a reducer, and an initial state
     const [state, dispatch] = useReducer(AppReducer, initialState);
-    let remaining = 0;
+    let remaining = state.budget - (state.expenses.reduce((total, item) => total + item.cost, 0));
 
     if (state.expenses) {
             const totalExpenses = state.expenses.reduce((total, item) => {
